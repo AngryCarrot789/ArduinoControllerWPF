@@ -1,12 +1,135 @@
-﻿<Window x:Class="ArduinoController.MainWindow"
+﻿<mah:MetroWindow x:Class="ArduinoController.MainWindow"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ArduinoController"
+        xmlns:viewmodels="clr-namespace:ArduinoController.ViewModels"
+        xmlns:utils="clr-namespace:ArduinoController.Utils"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="Arduino Controller" 
+        MinWidth="1280" MinHeight="600" 
+        Height="720" Width="1280" 
+        Background="#FF252525" WindowTitleBrush="#CC2D2D2D" 
+        NonActiveGlowBrush="#CC373737" GlowBrush="#CC2D2D2D" 
+        NonActiveWindowTitleBrush="#FF373737">
+    <Window.DataContext>
+        <viewmodels:MainViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <utils:BoolToColourConverter x:Key="BoolColourConverter"/>
+    </Window.Resources>
+    <Grid Margin="5">
+        <Grid HorizontalAlignment="Left" Width="240">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <GroupBox Header="Ports and Connectivity" Background="#CC323232" BorderBrush="#CC323232">
+                <Grid>
+                    <Label Content="COM Ports Avaliable" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <ListBox SelectedItem="{Binding SerialView.SelectedPortName, UpdateSourceTrigger=PropertyChanged}" 
+                         ItemsSource="{Binding SerialView.PortsList, UpdateSourceTrigger=PropertyChanged}" Margin="0,26,0,140"/>
+                    <Button Focusable="False" 
+                        Command="{Binding SerialView.ConnectCommand}" 
+                        Content="{Binding SerialView.ButtonContent, UpdateSourceTrigger=PropertyChanged}" 
+                        VerticalAlignment="Bottom" Height="80" BorderBrush="#FF2D2D2D"/>
+                    <Button Focusable="False" Command="{Binding SerialView.RefreshPortsCommand}" Content="Refresh List" Margin="0,0,0,85" VerticalAlignment="Bottom" Height="50" BorderBrush="#FF2D2D2D"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="Settings" Background="#CC323232" BorderBrush="#CC323232" Grid.Row="1" Margin="0,5,0,0">
+                <Grid>
+                    <StackPanel Margin="10,0,0,0">
+                        <CheckBox IsChecked="{Binding SerialView.AnaloguePins.A0Enabled, UpdateSourceTrigger=PropertyChanged}" Content="Receive from A0 Pin" HorizontalAlignment="Left" Margin="0,10,0,0"/>
+                        <CheckBox IsChecked="{Binding SerialView.AnaloguePins.A1Enabled, UpdateSourceTrigger=PropertyChanged}" Content="Receive from A1 Pin" HorizontalAlignment="Left" Margin="0,10,0,0"/>
+                        <CheckBox IsChecked="{Binding SerialView.AnaloguePins.A2Enabled, UpdateSourceTrigger=PropertyChanged}" Content="Receive from A2 Pin" HorizontalAlignment="Left" Margin="0,10,0,0"/>
+                        <CheckBox IsChecked="{Binding SerialView.AnaloguePins.A3Enabled, UpdateSourceTrigger=PropertyChanged}" Content="Receive from A3 Pin" HorizontalAlignment="Left" Margin="0,10,0,0"/>
+                        <CheckBox IsChecked="{Binding SerialView.AnaloguePins.A4Enabled, UpdateSourceTrigger=PropertyChanged}" Content="Receive from A4 Pin" HorizontalAlignment="Left" Margin="0,10,0,0"/>
+                        <CheckBox IsChecked="{Binding SerialView.AnaloguePins.A5Enabled, UpdateSourceTrigger=PropertyChanged}" Content="Receive from A5 Pin" HorizontalAlignment="Left" Margin="0,10,0,0"/>
+                    </StackPanel>
+
+                </Grid>
+            </GroupBox>
+        </Grid>
+        <GroupBox Header="Controls" Margin="245,0,0,0" Background="#CC323232" BorderBrush="#CC323232">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="82*"/>
+                    <RowDefinition Height="49*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="198*"/>
+                    <ColumnDefinition Width="809*"/>
+                </Grid.ColumnDefinitions>
+                <GroupBox Header="Received Messages" Background="#CC323232" BorderBrush="#CC323232" Margin="0,0,2,0" Grid.RowSpan="2">
+                    <Grid>
+                        <TextBox Text="{Binding SerialView.TransceivedText, UpdateSourceTrigger=PropertyChanged}" 
+                                 TextChanged="TextBox_TextChanged" IsReadOnly="True" 
+                                 TextWrapping="Wrap" BorderBrush="#FF2D2D2D" Margin="0,0,0,50"/>
+
+                        <Button Focusable="False" Command="{Binding SerialView.ClearTransceivedMessages}" Content="Clear" VerticalAlignment="Bottom" Height="45" BorderBrush="#FF2D2D2D"/>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="Analogue Data Received" Background="#CC323232" BorderBrush="#CC323232" Grid.Column="1" Margin="2,0,0,5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="A0" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="54,10,55,0"/>
+                        <TextBox Text="{Binding SerialView.AnaloguePins.A0Text, UpdateSourceTrigger=PropertyChanged}" Margin="3,36,3,35" TextWrapping="Wrap" BorderBrush="#FF2D2D2D" TextChanged="AnalogueTextChanged" />
+                        <Button Focusable="False" Command="{Binding SerialView.AnaloguePins.ClearText}" CommandParameter="0" Content="Clear" VerticalAlignment="Bottom" Height="30" BorderBrush="#FF2D2D2D" Margin="3,0"/>
+                        <Label Content="A1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="54,10,55,0" Grid.Column="1"/>
+                        <TextBox Text="{Binding SerialView.AnaloguePins.A1Text, UpdateSourceTrigger=PropertyChanged}" Margin="3,36,3,35" TextWrapping="Wrap" Grid.Column="1" BorderBrush="#FF2D2D2D" TextChanged="AnalogueTextChanged"/>
+                        <Button Focusable="False" Command="{Binding SerialView.AnaloguePins.ClearText}" CommandParameter="1" Content="Clear" VerticalAlignment="Bottom" Height="30" BorderBrush="#FF2D2D2D" Margin="3,0" Grid.Column="1"/>
+                        <Label Content="A2" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="54,10,55,0" Grid.Column="2"/>
+                        <TextBox Text="{Binding SerialView.AnaloguePins.A2Text, UpdateSourceTrigger=PropertyChanged}" Margin="3,36,3,35" TextWrapping="Wrap" Grid.Column="2" BorderBrush="#FF2D2D2D" TextChanged="AnalogueTextChanged"/>
+                        <Button Focusable="False" Command="{Binding SerialView.AnaloguePins.ClearText}" CommandParameter="2" Content="Clear" VerticalAlignment="Bottom" Height="30" BorderBrush="#FF2D2D2D" Margin="4,0,2,0" Grid.Column="2"/>
+                        <Label Content="A3" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="54,10,55,0" Grid.Column="3"/>
+                        <TextBox Text="{Binding SerialView.AnaloguePins.A3Text, UpdateSourceTrigger=PropertyChanged}" Margin="3,36,3,35" TextWrapping="Wrap" Grid.Column="3" BorderBrush="#FF2D2D2D" TextChanged="AnalogueTextChanged"/>
+                        <Button Focusable="False" Command="{Binding SerialView.AnaloguePins.ClearText}" CommandParameter="3" Content="Clear" VerticalAlignment="Bottom" Height="30" BorderBrush="#FF2D2D2D" Margin="3,0" Grid.Column="3"/>
+                        <Label Content="A4" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="54,10,55,0" Grid.Column="4"/>
+                        <TextBox Text="{Binding SerialView.AnaloguePins.A4Text, UpdateSourceTrigger=PropertyChanged}" Margin="3,36,3,35" TextWrapping="Wrap" Grid.Column="4" BorderBrush="#FF2D2D2D" TextChanged="AnalogueTextChanged"/>
+                        <Button Focusable="False" Command="{Binding SerialView.AnaloguePins.ClearText}" CommandParameter="4" Content="Clear" VerticalAlignment="Bottom" Height="30" BorderBrush="#FF2D2D2D" Margin="3,0" Grid.Column="4"/>
+                        <Label Content="A5" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="54,10,55,0" Grid.Column="5"/>
+                        <TextBox Text="{Binding SerialView.AnaloguePins.A5Text, UpdateSourceTrigger=PropertyChanged}" Margin="3,36,3,35" TextWrapping="Wrap" Grid.Column="5" BorderBrush="#FF2D2D2D" TextChanged="AnalogueTextChanged"/>
+                        <Button Focusable="False" Command="{Binding SerialView.AnaloguePins.ClearText}" CommandParameter="5" Content="Clear" VerticalAlignment="Bottom" Height="30" BorderBrush="#FF2D2D2D" Margin="3,0" Grid.Column="5"/>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="Digital Pin Controls" Background="#CC323232" BorderBrush="#CC323232" Grid.Column="1" Grid.Row="1" Margin="2,5,0,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Command="{Binding SerialView.DigitalPins.SetDigitalPinCommand}" CommandParameter="2"  Background="{Binding Path=SerialView.DigitalPins.D2Pin,  Converter={StaticResource BoolColourConverter}}" Content="DigitalPin 2"  Margin="3" BorderBrush="#FF2D2D2D" Focusable="False"/>
+                        <Button Command="{Binding SerialView.DigitalPins.SetDigitalPinCommand}" CommandParameter="3"  Background="{Binding Path=SerialView.DigitalPins.D3Pin,  Converter={StaticResource BoolColourConverter}}" Content="DigitalPin 3"  Margin="3" Grid.Column="1" BorderBrush="#FF2D2D2D" Focusable="False"/>
+                        <Button Command="{Binding SerialView.DigitalPins.SetDigitalPinCommand}" CommandParameter="4"  Background="{Binding Path=SerialView.DigitalPins.D4Pin,  Converter={StaticResource BoolColourConverter}}" Content="DigitalPin 4"  Margin="3" Grid.Column="2" BorderBrush="#FF2D2D2D" Focusable="False"/>
+                        <Button Command="{Binding SerialView.DigitalPins.SetDigitalPinCommand}" CommandParameter="5"  Background="{Binding Path=SerialView.DigitalPins.D5Pin,  Converter={StaticResource BoolColourConverter}}" Content="DigitalPin 5"  Margin="3" Grid.Column="3" BorderBrush="#FF2D2D2D" Focusable="False"/>
+                        <Button Command="{Binding SerialView.DigitalPins.SetDigitalPinCommand}" CommandParameter="6"  Background="{Binding Path=SerialView.DigitalPins.D6Pin,  Converter={StaticResource BoolColourConverter}}" Content="DigitalPin 6"  Margin="3" Grid.Column="4" BorderBrush="#FF2D2D2D" Focusable="False"/>
+                        <Button Command="{Binding SerialView.DigitalPins.SetDigitalPinCommand}" CommandParameter="7"  Background="{Binding Path=SerialView.DigitalPins.D7Pin,  Converter={StaticResource BoolColourConverter}}" Content="DigitalPin 7"  Margin="3" Grid.Column="5" BorderBrush="#FF2D2D2D" Focusable="False"/>
+                        <Button Command="{Binding SerialView.DigitalPins.SetDigitalPinCommand}" CommandParameter="8"  Background="{Binding Path=SerialView.DigitalPins.D8Pin,  Converter={StaticResource BoolColourConverter}}" Content="DigitalPin 8"  Margin="3" Grid.Row="1" BorderBrush="#FF2D2D2D" Focusable="False"/>
+                        <Button Command="{Binding SerialView.DigitalPins.SetDigitalPinCommand}" CommandParameter="9"  Background="{Binding Path=SerialView.DigitalPins.D9Pin,  Converter={StaticResource BoolColourConverter}}" Content="DigitalPin 9"  Margin="3" Grid.Column="1" Grid.Row="1" BorderBrush="#FF2D2D2D" Focusable="False"/>
+                        <Button Command="{Binding SerialView.DigitalPins.SetDigitalPinCommand}" CommandParameter="10" Background="{Binding Path=SerialView.DigitalPins.D10Pin, Converter={StaticResource BoolColourConverter}}" Content="DigitalPin 10" Margin="3" Grid.Column="2" Grid.Row="1" BorderBrush="#FF2D2D2D" Focusable="False"/>
+                        <Button Command="{Binding SerialView.DigitalPins.SetDigitalPinCommand}" CommandParameter="11" Background="{Binding Path=SerialView.DigitalPins.D11Pin, Converter={StaticResource BoolColourConverter}}" Content="DigitalPin 11" Margin="3" Grid.Column="3" Grid.Row="1" BorderBrush="#FF2D2D2D" Focusable="False"/>
+                        <Button Command="{Binding SerialView.DigitalPins.SetDigitalPinCommand}" CommandParameter="12" Background="{Binding Path=SerialView.DigitalPins.D12Pin, Converter={StaticResource BoolColourConverter}}" Content="DigitalPin 12" Margin="3" Grid.Column="4" Grid.Row="1" BorderBrush="#FF2D2D2D" Focusable="False"/>
+                        <Button Command="{Binding SerialView.DigitalPins.SetDigitalPinCommand}" CommandParameter="13" Background="{Binding Path=SerialView.DigitalPins.D13Pin, Converter={StaticResource BoolColourConverter}}" Content="DigitalPin 13" Margin="3" Grid.Column="5" Grid.Row="1" BorderBrush="#FF2D2D2D" Focusable="False"/>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+        </GroupBox>
     </Grid>
-</Window>
+</mah:MetroWindow>
