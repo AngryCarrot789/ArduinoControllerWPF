@@ -111,9 +111,9 @@ namespace ArduinoController.ViewModels
 
         public void WriteTransceivedMessages(string message)
         {
-            //if (TransceivedText.Length > 400)
-            //    TransceivedText = "";
-            //TransceivedText += $"{message}\n";
+            if (TransceivedText.Length > 400)
+                TransceivedText = "";
+            TransceivedText += $"{message}\n";
         }
 
         public void vDigitalWrite(int pin, bool HIGHorLOW)

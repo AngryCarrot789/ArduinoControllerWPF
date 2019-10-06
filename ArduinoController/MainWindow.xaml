@@ -71,7 +71,7 @@
                         <Button Focusable="False" Command="{Binding SerialView.ClearTransceivedMessages}" Content="Clear" VerticalAlignment="Bottom" Height="45" BorderBrush="#FF2D2D2D"/>
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Analogue Data Received" Background="#CC323232" BorderBrush="#CC323232" Grid.Column="1" Margin="2,0,0,5">
+                <GroupBox Header="Analogue Data Received" Background="#CC323232" BorderBrush="#CC323232" Grid.Column="1" Margin="2,0,0,2">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*"/>
@@ -101,7 +101,7 @@
                         <Button Focusable="False" Command="{Binding SerialView.AnaloguePins.ClearText}" CommandParameter="5" Content="Clear" VerticalAlignment="Bottom" Height="30" BorderBrush="#FF2D2D2D" Margin="3,0" Grid.Column="5"/>
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Digital Pin Controls" Background="#CC323232" BorderBrush="#CC323232" Grid.Column="1" Grid.Row="1" Margin="2,5,0,0">
+                <GroupBox Header="Digital Pin Controls" Background="#CC323232" BorderBrush="#CC323232" Grid.Column="1" Grid.Row="1" Margin="2,3,0,0">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition/>
